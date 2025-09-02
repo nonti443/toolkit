@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎒</text></svg>">
+    <link rel="stylesheet" href="css/mystyle.css">
+
+    <!-- <linl rel="stylesheet" href="css/mystyle_json_formatter.css"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <title>Toolkit</title>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎒 Toolkit</h1>
+            <p>สร้างเลขบัตรประชาชนไทย 13 หลัก, GUID/UUID, ชื่อ-นามสกุล และเลขตามจำนวนและความยาวที่ต้องการ</p>
+        </div>
+
+        <div class="content">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('thai-id', event)">🆔 Thai ID</button>
+                <button class="tab" onclick="switchTab('guid', event)">🔑 GUID/UUID</button>
+                <button class="tab" onclick="switchTab('random-name', event)">📝 Random name</button>
+                <button class="tab" onclick="switchTab('random-number', event)">🎲 Random number</button>
+                <button class="tab" onclick="switchTab('json-to-table', event)">📊 JSON to Table</button>
+                <button class="tab" onclick="switchTab('json-formatter', event)">🧰 JSON Formatter</button>
+            </div>
+
+            <div class="tab-content active" id="thai-id">
+                <div class="generator-section">
+                    <label class="label">จำนวนเลขที่ต้องการสุ่ม</label>
+                    <div class="input-group">
+                        <input type="number" class="input-field" id="thaiIdCount" placeholder="เช่น 10" min="1" max="1000" value="1">
+                        <button class="btn btn-primary" id="generateThaiIdBtn" onclick="generateThaiIds()">
+                            🎲 สุ่มเลข
+                        </button>
+                    </div>
+                </div>
+                <div class="stats">
+                    <span class="stat-number" id="thaiIdGeneratedCount">0</span>
+                    <div class="stat-label">เลขที่สร้างล่าสุด</div>
+                </div>
+                <div class="result-section">
+                    <label class="label">เลขบัตรประชาชนที่สุ่มได้</label>
+                    <textarea class="textarea courier-font" id="thaiIdResultArea" placeholder="เลขที่สุ่มได้จะแสดงที่นี่..." readonly></textarea>
+                    <div class="button-group">
+                        <button class="btn btn-success" onclick="copyThaiIdResults()">📋 คัดลอกทั้งหมด</button>
+                        <button class="btn btn-danger" onclick="clearThaiIdResults()">🗑️ ล้างผลลัพธ์</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="guid">
+                <div class="generator-section">
+                    <label class="label">จำนวน GUID/UUID ที่ต้องการสุ่ม</label>
+                    <div class="input-group">
+                        <input type="number" class="input-field" id="guidCount" placeholder="เช่น 10" min="1" max="1000" value="1">
+                        <button class="btn btn-primary" id="generateGuidBtn" onclick="generateGuids()">🎲 สุ่ม GUID</button>
+                    </div>
+                    <div class="guid-options"> <div class="checkbox-group">
+                            <input type="checkbox" id="upperCase" checked>
+                            <label for="upperCase">ตัวพิมพ์ใหญ่</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="withBraces">
+                            <label for="withBraces">มีวงเล็บ {}</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="withoutHyphens">
+                            <label for="withoutHyphens">ไม่มีขีด -</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="stats">
+                    <span class="stat-number" id="guidGeneratedCount">0</span>
+                    <div class="stat-label">GUID ที่สร้างล่าสุด</div>
+                </div>
+                <div class="result-section">
+                    <label class="label">GUID/UUID ที่สุ่มได้</label>
+                    <textarea class="textarea courier-font" id="guidResultArea" placeholder="GUID ที่สุ่มได้จะแสดงที่นี่..." readonly></textarea>
+                    <div class="button-group">
+                        <button class="btn btn-success" onclick="copyGuidResults()">📋 คัดลอกทั้งหมด</button>
+                        <button class="btn btn-danger" onclick="clearGuidResults()">🗑️ ล้างผลลัพธ์</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="random-name">
+                <div class="generator-section">
+                    <label class="label">จำนวนชื่อที่ต้องการสุ่ม</label>
+                    <div class="input-group">
+                        <input type="number" class="input-field" id="nameCount" placeholder="เช่น 5" min="1" max="1000" value="1">
+                    </div>
+
+                    <div class="options-group">
+                        <div class="checkbox-group-container">
+                            <span class="checkbox-group-title">เลือกเพศ</span>
+                            <div class="option-row">
+                                <div class="checkbox-group">
+                                    <input type="radio" id="genderFemale" name="gender" value="female">
+                                    <label for="genderFemale">♀️ หญิง</label>
+                                </div>
+                                <div class="checkbox-group">
+                                    <input type="radio" id="genderMale" name="gender" value="male">
+                                    <label for="genderMale">♂️ ชาย</label>
+                                </div>
+                                <div class="checkbox-group">
+                                    <input type="radio" id="genderAny" name="gender" value="any" checked>
+                                    <label for="genderAny">ใดๆ</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="checkbox-group-container">
+                            <span class="checkbox-group-title">เลือกภาษา</span>
+                            <div class="option-row">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="nameLangTh">
+                                    <label for="nameLangTh">ไทย</label>
+                                </div>
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="nameLangEn" checked>
+                                    <label for="nameLangEn">อังกฤษ</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="checkbox-group-container">
+                             <span class="checkbox-group-title">เลือกประเภทชื่อ</span>
+                            <div class="option-row">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="nameTypeFirst" checked>
+                                    <label for="nameTypeFirst">ชื่อจริง</label>
+                                </div>
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="nameTypeLast" checked>
+                                    <label for="nameTypeLast">นามสกุล</label>
+                                </div>
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="nameTypeNickname">
+                                    <label for="nameTypeNickname">ชื่อเล่น</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <button class="btn btn-primary" id="generateNameBtn" onclick="generateNames()" style="margin-top: 10px;">
+                        👤 สุ่มชื่อ
+                    </button>
+                </div>
+
+                <div class="stats">
+                    <span class="stat-number" id="nameGeneratedCount">0</span>
+                    <div class="stat-label">ชื่อที่สร้างล่าสุด</div>
+                </div>
+
+                <div class="result-section">
+                    <label class="label">ชื่อ-นามสกุลที่สุ่มได้</label>
+                    <textarea class="textarea" id="nameResultArea" placeholder="ชื่อ-นามสกุลที่สุ่มได้จะแสดงที่นี่..." readonly></textarea>
+                    <div class="button-group">
+                        <button class="btn btn-success" onclick="copyNameResults()">📋 คัดลอกทั้งหมด</button>
+                        <button class="btn btn-danger" onclick="clearNameResults()">🗑️ ล้างผลลัพธ์</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="random-number">
+                <div class="generator-section">
+                    <label class="label">ตั้งค่าการสุ่มเลข</label>
+                    <div class="input-group">
+                        <input type="number" class="input-field" id="customNumberCount" placeholder="จำนวน (เช่น 10)" min="1" max="1000" value="1">
+                        <input type="number" class="input-field" id="customNumberLength" placeholder="ความยาว (เช่น 8)" min="1" max="50" value="8">
+                    </div>
+                     <button class="btn btn-primary" id="generateCustomNumberBtn" onclick="generateCustomNumbers()" style="margin-top: 20px;">
+                        🔢 สุ่มเลข
+                    </button>
+                </div>
+                <div class="stats">
+                    <span class="stat-number" id="customNumberGeneratedCount">0</span>
+                    <div class="stat-label">เลขที่สร้างล่าสุด</div>
+                </div>
+                <div class="result-section">
+                    <label class="label">เลขที่สุ่มได้</label>
+                    <textarea class="textarea courier-font" id="customNumberResultArea" placeholder="เลขที่สุ่มได้จะแสดงที่นี่..." readonly></textarea>
+                    <div class="button-group">
+                        <button class="btn btn-success" onclick="copyCustomNumberResults()">📋 คัดลอกทั้งหมด</button>
+                        <button class="btn btn-danger" onclick="clearCustomNumberResults()">🗑️ ล้างผลลัพธ์</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="json-to-table">
+                <div class="result-section">
+                    <label class="label">ข้อมูล JSON หรือ Text</label>
+                    <textarea class="textarea courier-font" id="jsonInput" placeholder="ใส่ข้อมูล JSON หรือ Text ที่ต้องการแปลงที่นี่..."></textarea>
+                    <div class="button-group">
+                        <button class="btn btn-success" onclick="convertJSONToTable()">แปลง JSON เป็นตาราง</button>
+                        <button class="btn btn-danger" onclick="clearTableAll()">🗑️ ล้างผลลัพธ์</button>
+                    </div>
+                </div>
+
+                <!-- ✅ ตารางแสดงผลย้ายมาอยู่ใน tab json-to-table -->
+                <div class="results-section">
+                    <div id="resultTable" class="table-container" style="display: none;">
+                        <div class="table-title">
+                            <span>ตาราง Result</span>
+                            <div class="copy-buttons">
+                                <button class="copy-btn" onclick="copyTableData('resultTableContent', 'csv')">📋 CSV</button>
+                                <button class="copy-btn" onclick="copyTableData('resultTableContent', 'tsv')">📋 TSV</button>
+                            </div>
+                        </div>
+                        <div class="table-wrapper">
+                            <div id="resultTableContent"></div>
+                        </div>
+                    </div>
+
+                    <div id="secondTable" class="table-container" style="display: none;">
+                        <div class="table-title">
+                            <span>ตาราง 2nd</span>
+                            <div class="copy-buttons">
+                                <button class="copy-btn" onclick="copyTableData('secondTableContent', 'csv')">📋 CSV</button>
+                                <button class="copy-btn" onclick="copyTableData('secondTableContent', 'tsv')">📋 TSV</button>
+                            </div>
+                        </div>
+                        <div class="table-wrapper">
+                            <div id="secondTableContent"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="json-formatter">
+                <div class="result-section">
+                    <label class="label">ข้อมูล JSON</label>
+                    <textarea class="textarea courier-font" id="jsonInputFormatter" placeholder="วางหรือพิมพ์ JSON ที่นี่..."></textarea>
+
+                    <div class="button-group">
+                        <button class="btn btn-success" onclick="processJSON()">🔧 ประมวลผล JSON</button>
+                        <button class="btn btn-primary" onclick="validateJSON()">✅ ตรวจสอบความถูกต้อง</button>
+                        <button class="btn btn-danger" onclick="clearFormatterAll()">🗑️ ล้างข้อมูล</button>
+                    </div>
+
+                    <div id="history"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="js/myscripts.js"></script>
+
+</body>
+</html>
