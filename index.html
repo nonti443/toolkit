@@ -28,6 +28,7 @@
                 <button class="tab" onclick="switchTab('random-number', event)">🎲 Random number</button>
                 <button class="tab" onclick="switchTab('json-to-table', event)">📊 JSON to Table</button>
                 <button class="tab" onclick="switchTab('json-formatter', event)">🧰 JSON Formatter</button>
+                <button class="tab" onclick="switchTab('production', event)">🔥 Production</button>
             </div>
 
             <div class="tab-content active" id="thai-id">
@@ -244,10 +245,73 @@
                     <div id="history"></div>
                 </div>
             </div>
+
+            <!-- <div class="tab-content" id="production">
+            <div class="options">
+                <button class="btn btn-success" id="generateProductionDataBtn" onclick="generateProductionData()">
+                    🚀 สร้างข้อมูล Production
+                </button>
+                <button class="btn btn-primary" onclick="copyResult('privateIdValueOutput')">📋 คัดลอก Private ID</button>
+                <button class="btn btn-primary" onclick="copyResult('dateTimeOutput')">📋 คัดลอก Date Time</button>
+                <button class="btn btn-danger" onclick="clearProductionData()">🗑️ ล้างข้อมูล</button>
+            </div>
+
+            <div class="result-section">
+                <div class="result-item">
+                    <label class="label">1. Private ID Value (รูปแบบ Posttest-UUID)</label>
+                    <div class="output-wrapper">
+                        <p class="output courier-font" id="privateIdValueOutput">รอการสร้าง...</p>
+                    </div>
+                </div>
+                <div class="result-item">
+                    <label class="label">2. วันที่/เวลาปัจจุบัน (รูปแบบ DD/MM/YYYY HH:mm:ss)</label>
+                    <div class="output-wrapper">
+                        <p class="output courier-font" id="dateTimeOutput">รอการสร้าง...</p>
+                    </div>
+                </div>
+            </div> -->
+
+
+            <div class="tab-content" id="production">
+                <div class="options options-full-width"> <div class="option-group-vertical">
+                    <label for="privateIdValueOutput">1. Private ID (รหัสเฉพาะ: Px-xxxxxxxxxx)</label>
+                    <div class="output-container">
+                        <span class="output-value courier-font" id="privateIdValueOutput">รอการสร้าง...</span>
+                        <button class="btn btn-primary btn-success" onclick="generatePrivateIdValueAndCopy()">
+                            🚀 สร้าง Private ID
+                        </button>
+                    </div>
+                </div>
+
+                <div class="option-group-vertical">
+                    <label for="dateTimeOutput">2. วันที่/เวลาปัจจุบัน (DD/MM/YYYY HH:mm:ss)</label>
+                    <div class="output-container">
+                        <span class="output-value courier-font" id="dateTimeOutput">รอการสร้าง...</span>
+                        <button class="btn btn-primary btn-success" onclick="generateCurrentDateTimeAndCopy()">
+                            ⏰ สร้าง Date/Time
+                        </button>
+                    </div>
+                </div>
+
+                <button class="btn btn-danger clear-all-btn" onclick="clearProductionData()">
+                   🗑️ ล้างข้อมูลทั้งหมด
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="fullScreenModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">JSON Full Screen View</h3>
+                <span class="close-btn" onclick="closeModal()">✕</span>
+            </div>
+            <div class="modal-body courier-font">
+                <div id="modalContent"></div>
+            </div>
         </div>
     </div>
 
 <script src="js/myscripts.js"></script>
-
 </body>
 </html>

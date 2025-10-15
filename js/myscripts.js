@@ -2,6 +2,7 @@ let thaiIdResults = [];
 let guidResults = [];
 let nameResults = [];
 let customNumberResults = [];
+let formatterHistory = [];
 let generatedThaiIds = new Set();
 
 // --- Name Data (to be populated from data.json) ---
@@ -1058,52 +1059,111 @@ window.addEventListener('DOMContentLoaded', () => {
 let jsonHistory = [];
 
 function processJSON() {
-  const input = document.getElementById('jsonInputFormatter').value.trim();
-  if (!input) {
-    showNotification('กรุณาใส่ข้อมูล JSON', 'error');
-    return;
-  }
-  
-  try {
-    const json = JSON.parse(input);
-    const pretty = JSON.stringify(json, null, 2);
-    const minified = JSON.stringify(json);
-    const tree = generateTree(json);
+    const jsonInput = document.getElementById('jsonInputFormatter');
+    const historyDiv = document.getElementById('history');
+    const jsonString = jsonInput.value.trim();
 
-    jsonHistory.unshift({
-      time: new Date().toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      }),
-      pretty,
-      minified,
-      tree
-    });
-    
-    renderHistory();
-    document.getElementById('jsonInputFormatter').value = '';
-    showNotification('ประมวลผล JSON สำเร็จแล้ว!', 'success');
-  } catch (error) {
-    showNotification('รูปแบบ JSON ไม่ถูกต้อง หรือไม่รองรับ', 'error');
-  }
+    if (!jsonString) {
+        showNotification('⚠️ กรุณาวางหรือพิมพ์ข้อมูล JSON', 'warning');
+        return;
+    }
+
+    try {
+        const jsonObject = JSON.parse(jsonString);
+        // Pretty Print
+        const formattedJson = JSON.stringify(jsonObject, null, 2);
+        
+        // Validation Result
+        const validationResult = { valid: true };
+
+        // Save to history
+        formatterHistory.unshift({ 
+            original: jsonString,
+            formatted: formattedJson,
+            data: jsonObject,
+            validation: validationResult
+        });
+
+        // จำกัดประวัติการใช้งาน
+        if (formatterHistory.length > 5) {
+            formatterHistory.pop();
+        }
+
+        // Render history
+        renderHistory();
+
+        showNotification('✅ ประมวลผล JSON สำเร็จ', 'success');
+
+    } catch (error) {
+        showNotification(`❌ JSON ไม่ถูกต้อง: ${error.message}`, 'error');
+        // Render invalid input to history if user desires. For now, only show notification.
+        // Or you can validateJSON() first and process only if valid.
+        validateJSON();
+    }
 }
 
 function validateJSON() {
-  const input = document.getElementById('jsonInputFormatter').value.trim();
-  if (!input) {
-    showNotification('กรุณาใส่ข้อมูล JSON', 'error');
-    return;
-  }
-  
-  try {
-    JSON.parse(input);
-    showNotification('✅ Valid JSON format', 'success');
-  } catch (error) {
-    showNotification('รูปแบบ JSON ไม่ถูกต้อง หรือไม่รองรับ', 'error');
-  }
+    const jsonInput = document.getElementById('jsonInputFormatter');
+    const jsonString = jsonInput.value.trim();
+    const historyDiv = document.getElementById('history');
+
+    if (!jsonString) {
+        showNotification('⚠️ กรุณาวางหรือพิมพ์ข้อมูล JSON เพื่อตรวจสอบ', 'warning');
+        return;
+    }
+
+    try {
+        const jsonObject = JSON.parse(jsonString);
+        const formattedJson = JSON.stringify(jsonObject, null, 2);
+        
+        const validationResult = { 
+            valid: true,
+            message: 'JSON ถูกต้องตามรูปแบบ'
+        };
+
+        // Save to history only for valid JSON
+        formatterHistory.unshift({ 
+            original: jsonString,
+            formatted: formattedJson,
+            data: jsonObject,
+            validation: validationResult
+        });
+        
+        if (formatterHistory.length > 5) {
+            formatterHistory.pop();
+        }
+
+        renderHistory();
+        showNotification('✅ JSON ถูกต้องตามรูปแบบ', 'success');
+
+    } catch (error) {
+        const validationResult = { 
+            valid: false,
+            message: `ข้อผิดพลาด: ${error.message}`
+        };
+
+        // Save to history for invalid JSON too, showing the error
+        formatterHistory.unshift({ 
+            original: jsonString,
+            formatted: jsonString, // Use original for invalid
+            data: null,
+            validation: validationResult
+        });
+        
+        if (formatterHistory.length > 5) {
+            formatterHistory.pop();
+        }
+
+        renderHistory();
+        showNotification(`❌ JSON ไม่ถูกต้อง: ${error.message}`, 'error');
+    }
+}
+
+function clearFormatterAll() {
+    document.getElementById('jsonInputFormatter').value = '';
+    document.getElementById('history').innerHTML = '';
+    formatterHistory = [];
+    showNotification('🗑️ ล้างข้อมูล JSON Formatter ทั้งหมดแล้ว', 'info');
 }
 
 function clearFormatterAll() {
@@ -1129,35 +1189,311 @@ function generateTree(obj) {
 }
 
 function renderHistory() {
-  const container = document.getElementById('history');
-  container.innerHTML = '';
-  
-  if (jsonHistory.length === 0) {
-    container.innerHTML = '<div style="text-align: center; padding: 40px; color: #64748B; font-size: 16px;">No data</div>';
+    const historyDiv = document.getElementById('history');
+    historyDiv.innerHTML = ''; // Clear previous history
+
+    formatterHistory.forEach((item, index) => {
+        const html = generateResultHtml(index, item.formatted, item.validation, item.data);
+        historyDiv.innerHTML += html;
+    });
+
+    // Add event listeners for new collapse icons
+    document.querySelectorAll('.collapse-icon').forEach(icon => {
+        icon.onclick = function() {
+            toggleNode(this);
+        };
+    });
+}
+
+function generateResultHtml(index, formattedJson, validationResult, jsonObject, toolName = 'JSON Formatter') {
+    const originalJson = formatterHistory[index].original;
+    const item = formatterHistory[index];
+    const validationClass = validationResult.valid ? 'success' : 'error';
+    const validationIcon = validationResult.valid ? '✅' : '❌';
+    const validationMessage = validationResult.valid ? 'JSON ถูกต้อง' : validationResult.message;
+    const time = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+
+    let resultOutputHtml = '';
+    if (validationResult.valid) {
+        // Pretty Print View
+        resultOutputHtml += `
+            <div class="result-output pretty-print-view active-view" data-view="pretty-print" id="content_${index}_pretty">
+                <pre class="formatted-json-output"><code>${formattedJson}</code></pre>
+            </div>
+            `;
+        
+        // Tree View (If data is available)
+        if (jsonObject) {
+            const treeViewHtml = createChildNodeHtml(jsonObject, null, true); // Root starts expanded
+            resultOutputHtml += `
+                <div class="result-output json-tree-container" data-view="tree-view" id="content_${index}_tree" style="display: none;">
+                    <div class="json-node-root">
+                        ${treeViewHtml}
+                    </div>
+                </div>
+                `;
+        }
+    } else {
+         resultOutputHtml += `
+            <div class="result-output pretty-print-view active-view error-output" data-view="pretty-print" id="content_${index}_pretty">
+                <pre class="formatted-json-output">${originalJson}</pre>
+                <div class="error-message">
+                    ${validationMessage}
+                </div>
+            </div>
+            `;
+    }
+
+    const html = `
+        <div class="history-item ${validationClass}" id="item_${index}">
+            <div class="history-header">
+                <span class="history-title">${validationIcon} ผลลัพธ์ ${index + 1} (${toolName})</span>
+                <span class="history-time">${time}</span>
+            </div>
+            
+            <div class="history-controls">
+                ${validationResult.valid ? `
+                    <button class="btn btn-sm btn-primary" onclick="switchView(${index}, 'pretty')">{} Pretty Print</button>
+                    <button class="btn btn-sm btn-primary" onclick="switchView(${index}, 'tree')">🌳 Tree View</button>
+                    <button class="btn btn-sm btn-primary" onclick="showFullScreen(${index})">⛶ เต็มจอ</button>
+                    <button class="btn btn-sm btn-info" onclick="copyToClipboard(document.getElementById('content_${index}_pretty').querySelector('code').textContent)">📋 คัดลอก JSON</button>
+                    <button class="btn btn-sm btn-success" onclick="downloadJSON(${index}, '${toolName}')">💾 ดาวน์โหลด</button>
+                ` : `
+                    <button class="btn btn-sm btn-info" onclick="copyToClipboard(document.getElementById('jsonInputFormatter').value)">📋 คัดลอก Input</button>
+                `}
+                <button class="btn btn-sm btn-danger" onclick="clearHistoryItem(${index})">🗑️ ลบ</button>
+            </div>
+            
+            <div class="history-content" id="content_${index}" data-validation="${validationResult.valid}">
+                ${resultOutputHtml}
+            </div>
+        </div>
+    `;
+
+    return html;
+}
+
+function createChildNodeHtml(data, key = null, startExpanded = true) {
+    let content = '';
+    const isContainer = (typeof data === 'object' && data !== null);
+    const isArray = Array.isArray(data);
+    const displayKey = key !== null ? `<span class="json-key">${isArray ? '' : `"${key}"`}</span>: ` : '';
+
+    if (isContainer) {
+        const keys = Object.keys(data);
+        const count = keys.length;
+        const type = isArray ? `[${count}]` : `{${count}}`;
+        const collapseIcon = startExpanded ? '▼' : '▶';
+        const childrenStyle = startExpanded ? 'display: block;' : 'display: none;';
+        const nodeClass = startExpanded ? 'expanded' : 'collapsed';
+
+        content += `<div class="json-node ${isArray ? 'json-array' : 'json-object'} ${nodeClass}">`;
+        
+        // Header (Key + Type/Count + Toggle Icon)
+        content += `<div class="json-header">`;
+        content += `<span class="collapse-icon" onclick="toggleNode(this)">${collapseIcon}</span>`;
+        content += `${displayKey}<span class="json-type">${type}</span><span class="json-count">${isArray ? 'items' : 'keys'}</span>`;
+        content += `</div>`;
+        
+        // Children
+        content += `<div class="json-children" style="${childrenStyle}">`;
+        
+        keys.forEach(childKey => {
+            const childValue = data[childKey];
+            content += createChildNodeHtml(childValue, childKey, false); // Children start collapsed
+        });
+        
+        content += '</div>'; // close json-children
+        content += '</div>'; // close json-node
+        
+    } else {
+        // Primitive value (string, number, boolean, null)
+        let value = data === null ? 'null' : (typeof data === 'string' ? `"${data}"` : data);
+        let valueClass = typeof data === 'string' ? 'json-string' : 
+                         (typeof data === 'number' ? 'json-number' : 
+                         (typeof data === 'boolean' ? 'json-boolean' : 'json-null'));
+
+        content += `<div class="json-node-primitive">${displayKey}<span class="${valueClass}">${value}</span></div>`;
+    }
+
+    return content;
+}
+
+function switchView(index, viewType) {
+    const contentDiv = document.getElementById(`content_${index}`);
+    const prettyView = document.getElementById(`content_${index}_pretty`);
+    const treeView = document.getElementById(`content_${index}_tree`);
+    
+    // Remove active state from all
+    contentDiv.querySelectorAll('.result-output').forEach(el => el.classList.remove('active-view'));
+    contentDiv.querySelectorAll('.result-output').forEach(el => el.style.display = 'none');
+
+    if (viewType === 'pretty' && prettyView) {
+        prettyView.style.display = 'block';
+        prettyView.classList.add('active-view');
+    } else if (viewType === 'tree' && treeView) {
+        treeView.style.display = 'block';
+        treeView.classList.add('active-view');
+    }
+}
+
+function toggleNode(iconElement) {
+    const header = iconElement.parentNode;
+    const node = header.parentNode;
+    const children = node.querySelector('.json-children');
+
+    if (!children) return; // Not a container node
+    
+    // Toggle display of children
+    if (children.style.display === 'none') {
+        children.style.display = 'block';
+        iconElement.textContent = '▼'; // Change to expand icon
+        node.classList.remove('collapsed');
+        node.classList.add('expanded');
+    } else {
+        children.style.display = 'none';
+        iconElement.textContent = '▶'; // Change to collapse icon
+        node.classList.remove('expanded');
+        node.classList.add('collapsed');
+    }
+}
+
+/**
+ * ลบรายการประวัติการใช้งาน JSON Formatter
+ */
+function clearHistoryItem(index) {
+    formatterHistory.splice(index, 1);
+    renderHistory();
+    showNotification('🗑️ ลบรายการประวัติแล้ว', 'info');
+}
+
+/**
+ * ฟังก์ชันดาวน์โหลด JSON จาก History Item
+ */
+function downloadJSON(idx, toolName = 'json formatter') {
+  const contentDiv = document.getElementById(`content_${idx}`);
+  const activeView = contentDiv.querySelector('.active-view');
+
+  if (!activeView) {
+    showNotification('⚠️ ไม่พบข้อมูลที่เลือก', 'warning');
     return;
   }
   
-  jsonHistory.forEach((entry, idx) => {
-    const id = jsonHistory.length - idx;
-    const div = document.createElement('div');
-    div.className = 'history-entry';
-    div.innerHTML = `
-      <div class="meta">
-        <div><strong>#${id}</strong> - ${entry.time}</div>
-        <div class="buttons">
-          <button class="copy-btn" onclick="copyText(${idx})">📋 Copy</button>
-          <button class="copy-btn" onclick="downloadText(${idx})">⬇️ Download</button>
-        </div>
-      </div>
-      <div class="json-tabs">
-        <button class="tab-btn active" onclick="showTab(${idx}, 'pretty', this)">Formatted</button>
-        <button class="tab-btn" onclick="showTab(${idx}, 'tree', this)">Tree View</button>
-        <button class="tab-btn" onclick="showTab(${idx}, 'minified', this)">Minified</button>
-      </div>
-      <div class="json-view" id="json-output-${idx}">${escapeHtml(entry.pretty)}</div>
-    `;
-    container.appendChild(div);
-  });
+  // ให้ดาวน์โหลดจาก Pretty Print เสมอ เพื่อให้ได้ JSON ที่ถูกต้อง
+  const prettyPrintView = contentDiv.querySelector('.pretty-print-view');
+  let content = '';
+
+  if (prettyPrintView) {
+      content = prettyPrintView.querySelector('code') ? prettyPrintView.querySelector('code').textContent : prettyPrintView.textContent;
+  } else {
+      // Fallback: Use the original input if no pretty print is found (shouldn't happen for valid JSON)
+      content = formatterHistory[idx].original;
+  }
+
+
+  if (!content.trim() || formatterHistory[idx].validation.valid === false) {
+      showNotification('⚠️ ไม่สามารถดาวน์โหลด JSON ที่ไม่ถูกต้องได้', 'error');
+      return;
+  }
+
+  const blob = new Blob([content], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${toolName.toLowerCase().replace(' ', '_')}_${idx + 1}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  
+  showNotification('📁 ไฟล์ดาวน์โหลดสำเร็จ!', 'success');
+}
+
+/**
+ * เปิด Modal แสดงผล JSON เต็มหน้าจอ
+ */
+function showFullScreen(index) {
+    const historyContentDiv = document.getElementById(`content_${index}`);
+    const modal = document.getElementById('fullScreenModal');
+    const modalContent = document.getElementById('modalContent');
+    const modalTitle = document.getElementById('modalTitle');
+    
+    // 1. ตรวจสอบว่ากำลังแสดงผลแบบไหนอยู่
+    const activeView = historyContentDiv.querySelector('.active-view');
+    const viewType = activeView ? activeView.getAttribute('data-view') : 'pretty-print';
+
+    // 2. คัดลอกเนื้อหาที่ต้องการแสดงผล
+    let contentToDisplay = '';
+    
+    if (viewType === 'pretty-print') {
+        // สำหรับ Pretty Print ให้คัดลอกเนื้อหาจาก <code>
+        contentToDisplay = activeView.querySelector('code') ? activeView.querySelector('code').innerHTML : activeView.querySelector('pre').innerHTML;
+        modalTitle.textContent = 'JSON Pretty Print (เต็มจอ)';
+        
+        // สำหรับ Pretty Print ใน Modal ให้ใช้ <pre><code> ธรรมดา
+        modalContent.innerHTML = `<pre class="formatted-json-output modal-output"><code>${contentToDisplay}</code></pre>`;
+
+    } else if (viewType === 'tree-view') {
+        // สำหรับ Tree View ให้คัดลอกโครงสร้าง HTML ของ Tree View ทั้งหมด
+        contentToDisplay = activeView.innerHTML;
+        modalTitle.textContent = 'JSON Tree View (เต็มจอ)';
+        
+        // สำหรับ Tree View ใน Modal ให้คัดลอกโครงสร้าง Tree View เดิมมา
+        modalContent.innerHTML = contentToDisplay;
+        
+        // ต้องเพิ่ม Event Listener สำหรับ toggleNode ใหม่ เพราะเป็น DOM ใหม่
+        modalContent.querySelectorAll('.collapse-icon').forEach(icon => {
+            icon.onclick = function() {
+                toggleNode(this);
+            };
+        });
+    }
+
+    // 3. แสดง Modal และล็อค Scroll ของ Body
+    modal.style.display = 'block';
+    document.body.classList.add('modal-open'); 
+}
+
+/**
+ * ปิด Modal
+ */
+function closeModal() {
+    const modal = document.getElementById('fullScreenModal');
+    modal.style.display = 'none';
+    
+    // ปลดล็อค Scroll ของ Body
+    document.body.classList.remove('modal-open'); 
+
+    document.getElementById('modalContent').innerHTML = '';
+}
+
+// ปิด Modal เมื่อคลิกนอก Modal
+window.onclick = function(event) {
+    const modal = document.getElementById('fullScreenModal');
+    if (event.target === modal) {
+        closeModal();
+    }
+}
+
+const sampleJSON = {
+    "name": "JSON Formatter Demo",
+    "version": "1.0.0",
+    "features": [
+      "Format JSON",
+      "Validate JSON",
+      "Tree View",
+      "Dark Mode"
+    ],
+    "settings": {
+        "indentation": 2,
+        "theme": "dark/light"
+    },
+    "history": [1, 2, 3],
+    "isActive": true,
+    "currentDate": new Date().toISOString()
+};
+
+const jsonInput = document.getElementById('jsonInputFormatter');
+if (jsonInput) {
+    jsonInput.value = JSON.stringify(sampleJSON, null, 2);
 }
 
 function showTab(idx, type, btn) {
@@ -1245,3 +1581,98 @@ document.addEventListener('DOMContentLoaded', function() {
   // Uncomment to add sample data
   // document.getElementById('jsonInputFormatter').value = JSON.stringify(sampleJSON, null, 2);
 });
+
+// ใน js/myscripts.js (เพิ่มฟังก์ชันใหม่ในส่วน PRODUCTIONR FUNCTIONS)
+
+// **********************************************
+// ********** PRODUCTIONR FUNCTIONS ***********
+// **********************************************
+
+// ฟังก์ชันสร้าง UUID v4 (ดัดแปลงให้ความยาวรวมกับ 'Posttest-' เท่ากับ 27 อักขระ)
+function uuidv4() {
+    return 'xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, 
+            // v = c == 'x' ? r : (r & 0x3 | 0x8); // v4 standard
+            // ปรับเป็นสุ่มทั้งหมดแทน (เพื่อให้ความยาวรวม 27 ตัว)
+            v = r; 
+        return v.toString(16);
+    }).toUpperCase();
+}
+
+// 1. ฟังก์ชันสร้าง privateIdValue ในรูปแบบ Posttest-UUID
+function generatePrivateIdValue() {
+    // ความยาวรวม: 'Posttest-' (9 อักขระ) + UUID ส่วนที่เหลือ (18 อักขระ) = 27 อักขระ
+    return 'Posttest-' + uuidv4();
+}
+
+// 2. ฟังก์ชันสร้างวันที่และเวลาปัจจุบันในรูปแบบ DD/MM/YYYY HH:mm:ss
+function generateCurrentDateTime() {
+    const now = new Date();
+
+    // Helper function เพื่อเพิ่มเลขศูนย์นำหน้า
+    const pad = (number) => String(number).padStart(2, '0');
+
+    const day = pad(now.getDate());
+    const month = pad(now.getMonth() + 1); // getMonth() เป็น 0-indexed
+    const year = now.getFullYear();
+    const hours = pad(now.getHours());
+    const minutes = pad(now.getMinutes());
+    const seconds = pad(now.getSeconds());
+
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+}
+
+// **********************************************
+// ********** AUTO COPY FUNCTIONS ***********
+// **********************************************
+
+// ฟังก์ชันหลักที่ถูกเรียกเมื่อกดปุ่ม "🚀 สร้าง Private ID"
+function generatePrivateIdValueAndCopy() {
+    const privateId = generatePrivateIdValue();
+    const outputElement = document.getElementById('privateIdValueOutput');
+    
+    outputElement.textContent = privateId;
+
+    // คัดลอกข้อมูล
+    copyToClipboard(privateId, 'Private ID');
+
+    // ล้างข้อมูล Date/Time เดิม
+    document.getElementById('dateTimeOutput').textContent = 'รอการสร้าง...';
+}
+
+// ฟังก์ชันหลักที่ถูกเรียกเมื่อกดปุ่ม "⏰ สร้าง Date/Time"
+function generateCurrentDateTimeAndCopy() {
+    const dateTime = generateCurrentDateTime();
+    const outputElement = document.getElementById('dateTimeOutput');
+    
+    outputElement.textContent = dateTime;
+
+    // คัดลอกข้อมูล
+    copyToClipboard(dateTime, 'วันที่/เวลา');
+
+    // ล้างข้อมูล Private ID เดิม
+    document.getElementById('privateIdValueOutput').textContent = 'รอการสร้าง...';
+}
+
+// ฟังก์ชันสำหรับล้างข้อมูลในแท็บ ProductionR (เรียกใช้โดยปุ่ม 🗑️ ล้างข้อมูล)
+function clearProductionData() {
+    document.getElementById('privateIdValueOutput').textContent = 'รอการสร้าง...';
+    document.getElementById('dateTimeOutput').textContent = 'รอการสร้าง...';
+    
+    if (typeof showNotification === 'function') {
+        showNotification('🗑️ ล้างข้อมูล ProductionR แล้ว', 'warning');
+    }
+}
+
+// *** หมายเหตุ: ตรวจสอบให้แน่ใจว่าคุณมีฟังก์ชัน copyToClipboard() ที่ทำงานได้แล้วใน myscripts.js
+// ถ้าไม่มีให้เพิ่มดังนี้:
+/*
+function copyToClipboard(text, type = 'ข้อมูล') {
+    navigator.clipboard.writeText(text).then(() => {
+        showNotification(`📋 คัดลอก ${type} สำเร็จ!`, 'success');
+    }).catch(err => {
+        console.error('Could not copy text: ', err);
+        showNotification('❌ ไม่สามารถคัดลอกได้', 'error');
+    });
+}
+*/
