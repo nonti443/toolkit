@@ -1473,23 +1473,23 @@ window.onclick = function(event) {
     }
 }
 
-const sampleJSON = {
-    "name": "JSON Formatter Demo",
-    "version": "1.0.0",
-    "features": [
-      "Format JSON",
-      "Validate JSON",
-      "Tree View",
-      "Dark Mode"
-    ],
-    "settings": {
-        "indentation": 2,
-        "theme": "dark/light"
-    },
-    "history": [1, 2, 3],
-    "isActive": true,
-    "currentDate": new Date().toISOString()
-};
+// const sampleJSON = {
+//     "name": "JSON Formatter Demo",
+//     "version": "1.0.0",
+//     "features": [
+//       "Format JSON",
+//       "Validate JSON",
+//       "Tree View",
+//       "Dark Mode"
+//     ],
+//     "settings": {
+//         "indentation": 2,
+//         "theme": "dark/light"
+//     },
+//     "history": [1, 2, 3],
+//     "isActive": true,
+//     "currentDate": new Date().toISOString()
+// };
 
 const jsonInput = document.getElementById('jsonInputFormatter');
 if (jsonInput) {
@@ -1634,7 +1634,7 @@ function generatePrivateIdValueAndCopy() {
     outputElement.textContent = privateId;
 
     // คัดลอกข้อมูล
-    copyToClipboard(privateId, 'Private ID');
+    copyToClipboard(privateId, 'สร้างและคัดลอก Private ID สำเร็จ 📋');
 
     // ล้างข้อมูล Date/Time เดิม
     document.getElementById('dateTimeOutput').textContent = 'รอการสร้าง...';
@@ -1648,7 +1648,7 @@ function generateCurrentDateTimeAndCopy() {
     outputElement.textContent = dateTime;
 
     // คัดลอกข้อมูล
-    copyToClipboard(dateTime, 'วันที่/เวลา');
+    copyToClipboard(dateTime, 'สร้างและคัดลอกวันที่/เวลาสำเร็จ 📋');
 
     // ล้างข้อมูล Private ID เดิม
     document.getElementById('privateIdValueOutput').textContent = 'รอการสร้าง...';
@@ -1660,7 +1660,7 @@ function clearProductionData() {
     document.getElementById('dateTimeOutput').textContent = 'รอการสร้าง...';
     
     if (typeof showNotification === 'function') {
-        showNotification('🗑️ ล้างข้อมูล ProductionR แล้ว', 'warning');
+        showNotification('🗑️ ล้างข้อมูล Production แล้ว', 'error');
     }
 }
 

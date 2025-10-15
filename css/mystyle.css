@@ -1304,31 +1304,56 @@ html {
     font-size: 0.9em;
 }
 
+/* View Toggle Button Styles */
+.view-toggle-btn {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: all 0.2s;
+}
+
+.view-toggle-btn.active {
+    background-color: #4f46e5; /* Indigo/Primary Color */
+    color: white;
+    border-color: #4f46e5;
+    font-weight: 500;
+}
+
+.history-actions {
+    display: flex;
+    gap: 5px;
+}
+
 /* Modal for Full Screen View */
 .modal {
     display: none; 
     position: fixed; 
-    z-index: 1000; 
+    z-index: 9999; 
     left: 0;
     top: 0;
     width: 100%; 
     height: 100%; 
-    overflow: auto; 
-    background-color: rgba(0,0,0,0.6); 
-    padding-top: 20px;
+    overflow: hidden; /* ล็อค Scroll ของ Modal container */
+    background-color: rgba(0,0,0,0.9); 
 }
 
 .modal-content {
     background-color: #fefefe;
-    margin: 3% auto; /* จัดกลางหน้าจอ โดยเว้นด้านบนเล็กน้อย */
-    padding: 0; 
+    /* *** การตั้งค่าให้เต็มจอ 100% *** */
+    margin: 0; 
+    padding: 0; /* ลบ padding หลักของ content box ออก */
     border: none; 
-    border-radius: 12px;
-    width: 95%; 
-    height: 94%;
+    border-radius: 0; 
+    width: 100%; 
+    height: 100%; 
+    /* ********************************* */
     display: flex;
     flex-direction: column;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    box-shadow: none; 
 }
 
 /* Class สำหรับ body เมื่อ Modal เปิด */
@@ -1340,8 +1365,9 @@ html {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    /* ย้าย Padding มาไว้ที่ Header แทน */
     padding: 15px 25px; 
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid #eee;
     margin-bottom: 0; 
     flex-shrink: 0; 
 }
@@ -1349,6 +1375,7 @@ html {
 .modal-body {
     flex-grow: 1; 
     overflow-y: auto; 
+    /* ย้าย Padding มาไว้ที่ Body เพื่อให้เนื้อหามีขอบ */
     padding: 25px; 
 }
 
@@ -1451,64 +1478,5 @@ body.dark-mode .close-btn {
 }
 body.dark-mode .close-btn:hover,
 body.dark-mode .close-btn:focus {
-    color: #e5e7eb;
-}
-
-
-/* เพิ่มส่วนนี้เพื่อปรับการแสดงผลของแท็บ ProductionR */
-
-.options-full-width {
-    /* ล้างการจัดแนวนอนที่เป็นค่าเริ่มต้นของ .options */
-    flex-direction: column;
-    align-items: stretch; /* ให้ element ยืดเต็มความกว้าง */
-    gap: 15px; /* ลดช่องว่างระหว่างกลุ่มลงเล็กน้อย */
-}
-
-/* ปรับให้ option-group-vertical ยืดเต็มความกว้างด้วย */
-.options-full-width .option-group-vertical {
-    width: 100%;
-}
-
-/* จัดสไตล์สำหรับปุ่มล้างข้อมูล */
-.clear-all-btn {
-    margin-top: 15px; /* เพิ่มช่องว่างด้านบน */
-    width: 100%; /* ให้ปุ่มล้างข้อมูลเต็มความกว้าง */
-    padding: 12px;
-    font-size: 1.1em;
-    font-weight: 600;
-}
-
-/* Dark Mode adjustment for better contrast in the production tab */
-body.dark-mode .options-full-width {
-    background: #1f2937; /* Darker background for the main content area */
-    border: 1px solid #374151;
-}
-
-/* Optional: Make the button groups wider if they aren't already */
-.option-group-vertical .output-container {
-    width: 100%; /* Ensure the container stretches to fill the space */
-}
-
-.output-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* <-- เปลี่ยนจากเดิมให้ชิดซ้าย-ขวา */
-    width: 100%; /* ให้เต็มความกว้าง */
-    padding: 10px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    background-color: #f7fafc;
-    margin-top: 5px;
-}
-
-/* เพิ่มคลาสใหม่สำหรับปุ่มที่อยู่ชิดขวา */
-.output-container .btn-generate {
-    flex-shrink: 0; /* ป้องกันไม่ให้ปุ่มหด */
-    margin-left: 15px; /* เพิ่มระยะห่างระหว่างค่าที่แสดงผลกับปุ่ม */
-}
-
-/* (เพิ่มส่วนสำหรับ Dark Mode หากต้องการ) */
-body.dark-mode .output-container {
-    background-color: #374151;
-    border-color: #4b5563;
+    color: #fff;
 }
