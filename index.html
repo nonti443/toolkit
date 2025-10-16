@@ -33,7 +33,7 @@
 
             <div class="tab-content active" id="thai-id">
                 <div class="generator-section">
-                    <label class="label">จำนวนเลขที่ต้องการสุ่ม</label>
+                <label class="label">จำนวนเลขที่ต้องการสุ่ม</label>
                     <div class="input-group">
                         <input type="number" class="input-field" id="thaiIdCount" placeholder="เช่น 10" min="1" max="1000" value="1">
                         <button class="btn btn-primary" id="generateThaiIdBtn" onclick="generateThaiIds()">
@@ -41,10 +41,10 @@
                         </button>
                     </div>
                 </div>
-                <div class="stats">
+                <!-- <div class="stats">
                     <span class="stat-number" id="thaiIdGeneratedCount">0</span>
                     <div class="stat-label">เลขที่สร้างล่าสุด</div>
-                </div>
+                </div> -->
                 <div class="result-section">
                     <label class="label">เลขบัตรประชาชนที่สุ่มได้</label>
                     <textarea class="textarea courier-font" id="thaiIdResultArea" placeholder="เลขที่สุ่มได้จะแสดงที่นี่..." readonly></textarea>
@@ -76,10 +76,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="stats">
+                <!-- <div class="stats">
                     <span class="stat-number" id="guidGeneratedCount">0</span>
                     <div class="stat-label">GUID ที่สร้างล่าสุด</div>
-                </div>
+                </div> -->
                 <div class="result-section">
                     <label class="label">GUID/UUID ที่สุ่มได้</label>
                     <textarea class="textarea courier-font" id="guidResultArea" placeholder="GUID ที่สุ่มได้จะแสดงที่นี่..." readonly></textarea>
@@ -93,68 +93,75 @@
             <div class="tab-content" id="random-name">
                 <div class="generator-section">
                     <label class="label">จำนวนชื่อที่ต้องการสุ่ม</label>
-                    <div class="input-group">
+                        <div class="input-group">
+                            <input type="number" class="input-field" id="nameCount" placeholder="เช่น 5" min="1" max="1000" value="1">
+                            <button class="btn btn-primary" id="generateNameBtn" onclick="generateNames()">
+                                👤 สุ่มชื่อ
+                            </button>
+                        </div>
+                    <!-- <div class="input-group">
                         <input type="number" class="input-field" id="nameCount" placeholder="เช่น 5" min="1" max="1000" value="1">
+                    </div> -->
+                    <div class="stats">
+                        <div class="options-group">
+                            <div class="checkbox-group-container">
+                                <span class="checkbox-group-title">เลือกเพศ</span>
+                                <div class="option-row">
+                                    <div class="checkbox-group">
+                                        <input type="radio" id="genderFemale" name="gender" value="female">
+                                        <label for="genderFemale">♀️ หญิง</label>
+                                    </div>
+                                    <div class="checkbox-group">
+                                        <input type="radio" id="genderMale" name="gender" value="male">
+                                        <label for="genderMale">♂️ ชาย</label>
+                                    </div>
+                                    <div class="checkbox-group">
+                                        <input type="radio" id="genderAny" name="gender" value="any" checked>
+                                        <label for="genderAny">ใดๆ</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="checkbox-group-container">
+                                <span class="checkbox-group-title">เลือกภาษา</span>
+                                <div class="option-row">
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="nameLangTh">
+                                        <label for="nameLangTh">ไทย</label>
+                                    </div>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="nameLangEn" checked>
+                                        <label for="nameLangEn">อังกฤษ</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="checkbox-group-container">
+                                <span class="checkbox-group-title">เลือกประเภทชื่อ</span>
+                                <div class="option-row">
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="nameTypeFirst" checked>
+                                        <label for="nameTypeFirst">ชื่อจริง</label>
+                                    </div>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="nameTypeLast" checked>
+                                        <label for="nameTypeLast">นามสกุล</label>
+                                    </div>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="nameTypeNickname">
+                                        <label for="nameTypeNickname">ชื่อเล่น</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="options-group">
-                        <div class="checkbox-group-container">
-                            <span class="checkbox-group-title">เลือกเพศ</span>
-                            <div class="option-row">
-                                <div class="checkbox-group">
-                                    <input type="radio" id="genderFemale" name="gender" value="female">
-                                    <label for="genderFemale">♀️ หญิง</label>
-                                </div>
-                                <div class="checkbox-group">
-                                    <input type="radio" id="genderMale" name="gender" value="male">
-                                    <label for="genderMale">♂️ ชาย</label>
-                                </div>
-                                <div class="checkbox-group">
-                                    <input type="radio" id="genderAny" name="gender" value="any" checked>
-                                    <label for="genderAny">ใดๆ</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="checkbox-group-container">
-                            <span class="checkbox-group-title">เลือกภาษา</span>
-                            <div class="option-row">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="nameLangTh">
-                                    <label for="nameLangTh">ไทย</label>
-                                </div>
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="nameLangEn" checked>
-                                    <label for="nameLangEn">อังกฤษ</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="checkbox-group-container">
-                             <span class="checkbox-group-title">เลือกประเภทชื่อ</span>
-                            <div class="option-row">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="nameTypeFirst" checked>
-                                    <label for="nameTypeFirst">ชื่อจริง</label>
-                                </div>
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="nameTypeLast" checked>
-                                    <label for="nameTypeLast">นามสกุล</label>
-                                </div>
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="nameTypeNickname">
-                                    <label for="nameTypeNickname">ชื่อเล่น</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                     <button class="btn btn-primary" id="generateNameBtn" onclick="generateNames()" style="margin-top: 10px;">
+                     <!-- <button class="btn btn-primary" id="generateNameBtn" onclick="generateNames()" style="margin-top: 10px;">
                         👤 สุ่มชื่อ
-                    </button>
+                    </button> -->
                 </div>
 
-                <div class="stats">
+                <!-- <div class="stats">
                     <span class="stat-number" id="nameGeneratedCount">0</span>
                     <div class="stat-label">ชื่อที่สร้างล่าสุด</div>
-                </div>
+                </div> -->
 
                 <div class="result-section">
                     <label class="label">ชื่อ-นามสกุลที่สุ่มได้</label>
@@ -172,15 +179,27 @@
                     <div class="input-group">
                         <input type="number" class="input-field" id="customNumberCount" placeholder="จำนวน (เช่น 10)" min="1" max="1000" value="1">
                         <input type="number" class="input-field" id="customNumberLength" placeholder="ความยาว (เช่น 8)" min="1" max="50" value="8">
-                    </div>
-                     <button class="btn btn-primary" id="generateCustomNumberBtn" onclick="generateCustomNumbers()" style="margin-top: 20px;">
+                        <button class="btn btn-primary" id="generateCustomNumberBtn" onclick="generateCustomNumbers()">
                         🔢 สุ่มเลข
                     </button>
+                    </div>
                 </div>
-                <div class="stats">
+
+                    <!-- <label class="label">จำนวนชื่อที่ต้องการสุ่ม</label>
+                        <div class="input-group">
+                            <input type="number" class="input-field" id="nameCount" placeholder="เช่น 5" min="1" max="1000" value="1">
+                            <button class="btn btn-primary" id="generateNameBtn" onclick="generateNames()" style="margin-top: 10px;">
+                                👤 สุ่มชื่อ
+                            </button>
+                        </div> -->
+                    <!-- <div class="input-group">
+                        <input type="number" class="input-field" id="nameCount" placeholder="เช่น 5" min="1" max="1000" value="1">
+                    </div> -->
+
+                <!-- <div class="stats">
                     <span class="stat-number" id="customNumberGeneratedCount">0</span>
                     <div class="stat-label">เลขที่สร้างล่าสุด</div>
-                </div>
+                </div> -->
                 <div class="result-section">
                     <label class="label">เลขที่สุ่มได้</label>
                     <textarea class="textarea courier-font" id="customNumberResultArea" placeholder="เลขที่สุ่มได้จะแสดงที่นี่..." readonly></textarea>
@@ -271,31 +290,33 @@
                 </div>
             </div> -->
 
-
             <div class="tab-content" id="production">
-                <div class="options options-full-width"> <div class="option-group-vertical">
-                    <label for="privateIdValueOutput">1. Private ID (รหัสเฉพาะ: Px-xxxxxxxxxx)</label>
+                <div class="option-group-vertical">
+                    <label for="privateIdValueOutput">1. Private ID (ตัวเลข 24 หลัก)</label>
                     <div class="output-container">
                         <span class="output-value courier-font" id="privateIdValueOutput">รอการสร้าง...</span>
+                        
                         <button class="btn btn-primary btn-success" onclick="generatePrivateIdValueAndCopy()">
                             🚀 สร้าง Private ID
                         </button>
                     </div>
-                </div>
+                </div><br>
 
                 <div class="option-group-vertical">
                     <label for="dateTimeOutput">2. วันที่/เวลาปัจจุบัน (DD/MM/YYYY HH:mm:ss)</label>
                     <div class="output-container">
                         <span class="output-value courier-font" id="dateTimeOutput">รอการสร้าง...</span>
+                        
                         <button class="btn btn-primary btn-success" onclick="generateCurrentDateTimeAndCopy()">
                             ⏰ สร้าง Date/Time
                         </button>
                     </div>
-                </div>
 
-                <button class="btn btn-danger clear-all-btn" onclick="clearProductionData()">
-                   🗑️ ล้างข้อมูลทั้งหมด
-                </button>
+                    <div class="button-group">
+                        <button class="btn btn-danger clear-all-btn" onclick="clearProductionData()">🗑️ ล้างข้อมูลทั้งหมด</button>
+                    </div>
+                    
+                </div>
             </div>
         </div>
     </div>

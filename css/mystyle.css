@@ -754,32 +754,21 @@ body.dark-mode .generator-section {
     border-color: rgba(148, 163, 184, 0.1);
 }
 
-.options-group {
-    display: flex;
-    flex-direction: column; 
-    gap: 16px; 
-    justify-content: center;
-    align-items: center; 
-    margin: 20px 0;
-}
-
 .checkbox-group-container {
-    margin-bottom: 16px;
     width: 100%;
-    max-width: 600px;
+    background: #f9fafb;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 15px 20px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
 }
 
 .checkbox-group-title {
     font-size: 16px;
     font-weight: 700;
     color: #374151;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
     display: block;
-    text-align: center;
-    background: linear-gradient(135deg, #4F46E5, #7C3AED);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
 body.dark-mode .checkbox-group-title {
@@ -787,14 +776,6 @@ body.dark-mode .checkbox-group-title {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-}
-
-.option-row {
-    display: flex;
-    gap: 12px; 
-    justify-content: center;
-    flex-wrap: wrap;
-    align-items: center;
 }
 
 .input-group {
@@ -947,7 +928,7 @@ body.dark-mode .checkbox-group:hover label {
     box-shadow: 
         0 10px 25px rgba(0, 0, 0, 0.08),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    animation: pulse 2s ease-in-out infinite;
+    /* animation: pulse 2s ease-in-out infinite; */
 }
 
 @keyframes pulse {
@@ -1212,18 +1193,24 @@ html {
 
 /* สำหรับการแสดงผล Pretty Print */
 .formatted-json-output {
-    white-space: pre-wrap; /* ให้ตัดบรรทัดได้หากยาวเกินไป */
-    word-wrap: break-word; /* ให้คำที่ยาวเกินตัดได้ */
-    overflow-x: auto; /* หากยาวมากให้ scroll ได้ */
-    padding: 15px;
-    background-color: #f8f8f8; /* พื้นหลังสีอ่อน */
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 0.9em;
-    line-height: 1.4;
-    color: #333; /* สีตัวอักษร */
-    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.05);
+    white-space: pre; /* ให้จัดบรรทัดแบบ JSON ปกติ */
+    word-wrap: normal;
+    overflow: auto; /* ✅ เปิด scrollbar ภายใน */
+    resize: vertical; /* ✅ สามารถลากขยายความสูงได้ */
+    min-height: 200px; /* ความสูงขั้นต่ำ */
+    max-height: 600px; /* จำกัดไม่ให้ยาวเกิน */
+    background-color: #f8fafc; /* สีพื้นหลัง */
+    border: 1px solid #e2e8f0;
+    border-radius: 12px; /* มุมโค้ง */
+    padding: 16px 20px;
+    color: #334155;
+    font-size: 13px;
+    line-height: 1.6;
+    font-family: 'Fira Code', 'Courier New', monospace;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
 }
+
 .error-output {
     background-color: #fff5f5;
     border-color: #fc8181;
@@ -1237,16 +1224,37 @@ html {
     border-top: 1px dashed #fc8181;
 }
 
-
 /* สำหรับ Tree View */
 .json-tree-container {
     padding: 15px;
-    background-color: #f8f8f8;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-family: 'Courier New', Courier, monospace;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 13px;
     line-height: 1.6;
-    overflow-x: auto;
+    color: #334155;
+    overflow: auto;
+    resize: vertical; /* ✅ ลากขยายได้ */
+    min-height: 200px;
+    max-height: 600px;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+}
+
+/* Scrollbar สวยๆ */
+.formatted-json-output::-webkit-scrollbar,
+.json-tree-container::-webkit-scrollbar {
+    width: 8px;
+}
+.formatted-json-output::-webkit-scrollbar-thumb,
+.json-tree-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+.formatted-json-output::-webkit-scrollbar-thumb:hover,
+.json-tree-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
 }
 
 .json-node, .json-node-primitive {
@@ -1479,4 +1487,69 @@ body.dark-mode .close-btn {
 body.dark-mode .close-btn:hover,
 body.dark-mode .close-btn:focus {
     color: #fff;
+}
+
+/* สำหรับจัดระเบียบ Output Container ในแท็บ ProductionR */
+.output-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* <-- เปลี่ยนจากเดิมให้ชิดซ้าย-ขวา */
+    width: 100%; /* ให้เต็มความกว้าง */
+    padding: 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 15px;
+    background-color: #f7fafc;
+    margin-top: 10px;
+}
+
+/* เพิ่มคลาสใหม่สำหรับปุ่มที่อยู่ชิดขวา */
+.output-container .btn-generate {
+    flex-shrink: 0; /* ป้องกันไม่ให้ปุ่มหด */
+    margin-left: 15px; /* เพิ่มระยะห่างระหว่างค่าที่แสดงผลกับปุ่ม */
+}
+
+/* (เพิ่มส่วนสำหรับ Dark Mode หากต้องการ) */
+body.dark-mode .output-container {
+    background-color: #374151;
+    border-color: #4b5563;
+}
+
+.options-group {
+  display: flex;
+  flex-direction: row;      /* แสดงแถวแนวนอน */
+  justify-content: center;  /* จัดตรงกลาง */
+  align-items: flex-start;  /* ชิดบน */
+  gap: 40px;                /* ระยะห่างระหว่างแต่ละหมวด */
+  flex-wrap: nowrap;        /* ไม่ตัดบรรทัด */
+  margin-top: 30px;
+}
+
+.checkbox-group-container {
+  display: flex;
+  flex-direction: column;   /* ให้แต่ละหมวดเรียงหัวข้อกับรายการแนวตั้ง */
+  align-items: flex-start;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.checkbox-group-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.option-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+/* แต่ละ checkbox/radio */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }

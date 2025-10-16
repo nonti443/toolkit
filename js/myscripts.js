@@ -144,11 +144,16 @@ async function generateThaiIds() {
     generateBtn.disabled = false;
 }
 
+// function updateThaiIdResultsDisplay(idsToDisplay) {
+//     const resultArea = document.getElementById('thaiIdResultArea');
+//     const generatedCount = document.getElementById('thaiIdGeneratedCount');
+//     resultArea.value = idsToDisplay.map(id => formatThaiId(id)).join('\n');
+//     generatedCount.textContent = idsToDisplay.length.toLocaleString();
+// }
+
 function updateThaiIdResultsDisplay(idsToDisplay) {
     const resultArea = document.getElementById('thaiIdResultArea');
-    const generatedCount = document.getElementById('thaiIdGeneratedCount');
     resultArea.value = idsToDisplay.map(id => formatThaiId(id)).join('\n');
-    generatedCount.textContent = idsToDisplay.length.toLocaleString();
 }
 
 function formatThaiId(id) {
@@ -229,12 +234,18 @@ async function generateGuids() {
     generateBtn.disabled = false;
 }
 
+// function updateGuidResultsDisplay(guidsToDisplay) {
+//     const resultArea = document.getElementById('guidResultArea');
+//     const generatedCount = document.getElementById('guidGeneratedCount');
+//     resultArea.value = guidsToDisplay.map(guid => formatGuid(guid)).join('\n');
+//     generatedCount.textContent = guidsToDisplay.length.toLocaleString();
+// }
+
 function updateGuidResultsDisplay(guidsToDisplay) {
     const resultArea = document.getElementById('guidResultArea');
-    const generatedCount = document.getElementById('guidGeneratedCount');
     resultArea.value = guidsToDisplay.map(guid => formatGuid(guid)).join('\n');
-    generatedCount.textContent = guidsToDisplay.length.toLocaleString();
 }
+
 
 function copyGuidResults() {
     if (guidResults.length === 0) {
@@ -426,12 +437,18 @@ async function generateNames() {
     generateBtn.disabled = false;
 }
 
+// function updateNameResultsDisplay(namesToDisplay) {
+//     const resultArea = document.getElementById('nameResultArea');
+//     const generatedCount = document.getElementById('nameGeneratedCount');
+//     resultArea.value = namesToDisplay.join('\n');
+//     generatedCount.textContent = namesToDisplay.length.toLocaleString();
+// }
+
 function updateNameResultsDisplay(namesToDisplay) {
     const resultArea = document.getElementById('nameResultArea');
-    const generatedCount = document.getElementById('nameGeneratedCount');
     resultArea.value = namesToDisplay.join('\n');
-    generatedCount.textContent = namesToDisplay.length.toLocaleString();
 }
+
 
 function copyNameResults() {
     if (nameResults.length === 0) {
@@ -502,11 +519,16 @@ async function generateCustomNumbers() {
     generateBtn.disabled = false;
 }
 
+// function updateCustomNumberResultsDisplay(numbersToDisplay) {
+//     const resultArea = document.getElementById('customNumberResultArea');
+//     const generatedCount = document.getElementById('customNumberGeneratedCount');
+//     resultArea.value = numbersToDisplay.join('\n');
+//     generatedCount.textContent = numbersToDisplay.length.toLocaleString();
+// }
+
 function updateCustomNumberResultsDisplay(numbersToDisplay) {
     const resultArea = document.getElementById('customNumberResultArea');
-    const generatedCount = document.getElementById('customNumberGeneratedCount');
     resultArea.value = numbersToDisplay.join('\n');
-    generatedCount.textContent = numbersToDisplay.length.toLocaleString();
 }
 
 function copyCustomNumberResults() {
